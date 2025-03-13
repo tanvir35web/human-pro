@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Play, Pause } from "lucide-react";
 import { BsPauseFill, BsPlayFill } from "react-icons/bs";
 
 export default function TimerCard(): JSX.Element {
