@@ -71,7 +71,7 @@ export default function Home() {
         <p className="text-3xl font-bold mb-6">All Time Plans</p>
         <div className="flex gap-8 flex-wrap">
           {plans.map((plan, index) => (
-            <TimerCard key={index} nameOfPlan={plan.name} time={plan.time} />
+            <TimerCard key={index} nameOfPlan={plan.name} estimatedTime={plan.time} />
           ))}
         </div>
       </div>

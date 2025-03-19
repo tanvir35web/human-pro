@@ -3,7 +3,13 @@ import { useState, useEffect } from "react";
 import { BsPauseFill, BsPlayFill } from "react-icons/bs";
 import { GrPowerReset } from "react-icons/gr";
 
-export default function TimerCard({ nameOfPlan }: { nameOfPlan: string }): JSX.Element {
+export default function TimerCard({
+  nameOfPlan,
+  estimatedTime,
+}: {
+  nameOfPlan: string;
+  estimatedTime: string;
+}): JSX.Element {
   const [time, setTime] = useState<number>(0);
   const [isRunning, setIsRunning] = useState<boolean>(false);
 
@@ -68,6 +74,7 @@ export default function TimerCard({ nameOfPlan }: { nameOfPlan: string }): JSX.E
   return (
     <div className="relative w-[500px] h-[300px] p-2 rounded-xl shadow border border-gray-200 bg-gray-50 text-gray-700 font-semibold text-5xl flex items-center justify-center gap-4">
       <p className="absolute top-6 text-base">{nameOfPlan}</p>
+      <p className="absolute top-8 text-sm">{estimatedTime}</p>
       <div className="flex flex-col gap-2 items-center justify-between">
         <div className="flex flex-row gap-4 items-center justify-center">
           <div className="flex flex-col gap-3 items-start justify-between">
