@@ -49,7 +49,9 @@ export default function TimerCard(): JSX.Element {
     }
   }, [isRunning]);
 
-  const formatTime = (time: number): { hours: string; minutes: string; seconds: string } => {
+  const formatTime = (
+    time: number
+  ): { hours: string; minutes: string; seconds: string } => {
     const hours = String(Math.floor(time / 3600)).padStart(2, "0");
     const minutes = String(Math.floor((time % 3600) / 60)).padStart(2, "0");
     const seconds = String(time % 60).padStart(2, "0");
@@ -89,6 +91,16 @@ export default function TimerCard(): JSX.Element {
         className="p-3 bg-green-200 rounded-full absolute bottom-4 right-5"
       >
         {isRunning ? <BsPauseFill size={32} /> : <BsPlayFill size={32} />}
+      </button>
+      <button
+        onClick={() => {
+          setTime(0);
+          localStorage.setItem("timer", "0");
+          setIsRunning(!isRunning);
+        }}
+        className="p-3 bg-red-200 text-red-700 text-sm rounded-md absolute bottom-4 left-5"
+      >
+        Reset
       </button>
     </div>
   );
