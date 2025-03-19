@@ -1,10 +1,17 @@
 "use client";
 import { useState, useEffect } from "react";
 import { BsPauseFill, BsPlayFill } from "react-icons/bs";
+import { GrPowerReset } from "react-icons/gr";
 
 export default function TimerCard(): JSX.Element {
   const [time, setTime] = useState<number>(0);
   const [isRunning, setIsRunning] = useState<boolean>(false);
+
+  const handleTimerReset = () => {
+    setTime(0);
+    localStorage.setItem("timer", "0");
+    setIsRunning(false);
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -88,19 +95,15 @@ export default function TimerCard(): JSX.Element {
       </div>
       <button
         onClick={() => setIsRunning(!isRunning)}
-        className="p-3 bg-green-200 rounded-full absolute bottom-4 right-5"
+        className="p-3 bg-green-200 rounded-full text-gray-600 absolute bottom-4 right-5"
       >
         {isRunning ? <BsPauseFill size={32} /> : <BsPlayFill size={32} />}
       </button>
       <button
-        onClick={() => {
-          setTime(0);
-          localStorage.setItem("timer", "0");
-          setIsRunning(!isRunning);
-        }}
-        className="p-3 bg-red-200 text-red-700 text-sm rounded-md absolute bottom-4 left-5"
+        onClick={() => handleTimerReset()}
+        className="p-3 bg-red-100 hover:bg-red-200 duration-150 text-red-700 text-sm rounded-md absolute bottom-4 left-5"
       >
-        Reset
+        <GrPowerReset size={24} />
       </button>
     </div>
   );
