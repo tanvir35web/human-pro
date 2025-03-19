@@ -74,7 +74,7 @@ export default function TimerCard({
   return (
     <div className="relative w-[500px] h-[300px] p-2 rounded-xl shadow border border-gray-200 bg-gray-50 text-gray-700 font-semibold text-5xl flex items-center justify-center gap-4">
       <p className="absolute top-6 text-base">{nameOfPlan}</p>
-      <p className="absolute top-8 text-sm">{estimatedTime}</p>
+      <p className="absolute top-12 text-sm">{estimatedTime}</p>
       <div className="flex flex-col gap-2 items-center justify-between">
         <div className="flex flex-row gap-4 items-center justify-center">
           <div className="flex flex-col gap-3 items-start justify-between">
