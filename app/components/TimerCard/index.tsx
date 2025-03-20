@@ -76,7 +76,7 @@ export default function TimerCard({
         isTimerCompleted ? "bg-green-100" : "bg-gray-50"
       } text-gray-700 font-semibold flex flex-col items-center`}
     >
-      <p className="text-base flex items-center gap-2 w-full bg-green-100 border border-green-200 p-2 rounded-md text-green-800">
+      <p className="text-base flex items-center gap-2 w-full bg-green-200 border border-green-200 p-2 rounded-md text-green-800">
         <BiTask size={20} />
         {nameOfPlan}
       </p>
