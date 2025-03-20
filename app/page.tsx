@@ -6,9 +6,9 @@ import TimerCard from "./components/TimerCard";
 
 export default function Home() {
   const [modal1Open, setModal1Open] = useState(false);
-  const [plans, setPlans] = useState<{ name: string; time: string }[]>([]);
+  const [plans, setPlans] = useState<{ name: string; time: number }[]>([]);
   const [planName, setPlanName] = useState("");
-  const [planTime, setPlanTime] = useState("");
+  const [planTime, setPlanTime] = useState(0);
 
   const handleCreatePlan = () => {
     if (!planName || !planTime) return; // Prevent empty submissions
@@ -19,7 +19,7 @@ export default function Home() {
     // Close modal and reset fields
     setModal1Open(false);
     setPlanName("");
-    setPlanTime("");
+    setPlanTime(0);
   };
 
   return (
@@ -60,7 +60,7 @@ export default function Home() {
               type="text"
               id="planTime"
               value={planTime}
-              onChange={(e) => setPlanTime(e.target.value)}
+              onChange={(e) => setPlanTime(Number(e.target.value))}
               className="p-2 border border-gray-300 w-full mt-2"
             />
           </div>
@@ -71,7 +71,11 @@ export default function Home() {
         <p className="text-3xl font-bold mb-6">All Time Plans</p>
         <div className="flex gap-8 flex-wrap">
           {plans.map((plan, index) => (
-            <TimerCard key={index} nameOfPlan={plan.name} estimatedTime={plan.time} />
+            <TimerCard
+              key={index}
+              nameOfPlan={plan.name}
+              estimatedTime={plan.time}
+            />
           ))}
         </div>
       </div>
