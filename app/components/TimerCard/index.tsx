@@ -8,7 +8,7 @@ import { BiTask } from "react-icons/bi";
 
 interface TimerCardProps {
   nameOfPlan: string;
-  estimatedTime: number; // now accepting estimated time as seconds
+  estimatedTime: number;
 }
 
 export default function TimerCard({
@@ -18,6 +18,7 @@ export default function TimerCard({
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   const [remainingTime, setRemainingTime] = useState<number>(estimatedTime);
   const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [isTimerCompleted, setIsTimerCompleted] = useState<boolean>(false);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -31,6 +32,7 @@ export default function TimerCard({
           if (newElapsed >= estimatedTime) {
             setIsRunning(false);
             clearInterval(interval!);
+            setIsTimerCompleted(true);
             return estimatedTime;
           }
 
@@ -68,7 +70,11 @@ export default function TimerCard({
   } = formatTime(remainingTime);
 
   return (
-    <div className="relative w-[500px] h-[350px] p-4 rounded-xl shadow border border-gray-200 bg-gray-50 text-gray-700 font-semibold flex flex-col items-center">
+    <div
+      className={`relative w-[500px] h-[350px] p-4 rounded-xl shadow border border-gray-200 ${
+        isTimerCompleted ? "bg-green-100" : "bg-gray-50"
+      }  text-gray-700 font-semibold flex flex-col items-center`}
+    >
       <p className="text-base flex items-center gap-2 w-full bg-green-100 border border-green-200 p-2 rounded-md text-green-800">
         <BiTask size={20} />
         {nameOfPlan}
@@ -89,11 +95,17 @@ export default function TimerCard({
         </div>
       </div>
 
+      <p className="mt-16 text-green-800">
+        {isTimerCompleted
+          ? "Congratulation, You have done it !"
+          : "Yes, You can do it !"}
+      </p>
+
       {/* Controls */}
-      <div className="absolute bottom-4 flex gap-6">
+      <div className="absolute bottom-4 right-5 flex gap-6">
         <button
           onClick={toggleTimer}
-          className="p-3 bg-green-200 rounded-full text-gray-600"
+          className={`p-3 bg-green-200 rounded-full text-gray-600 ${isTimerCompleted ? "hidden" : "block"}`}
         >
           {isRunning ? <BsPauseFill size={32} /> : <BsPlayFill size={32} />}
         </button>
@@ -107,5 +119,3 @@ export default function TimerCard({
     </div>
   );
 }
-
-

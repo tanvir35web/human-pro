@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mui/x-charts": "^7.28.0",
     "antd": "^5.24.4",
     "framer-motion": "^12.4.10",
     "lucide-react": "^0.479.0",
