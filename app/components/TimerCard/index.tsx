@@ -1,34 +1,38 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { BsPauseFill, BsPlayFill } from "react-icons/bs";
 import { GrPowerReset } from "react-icons/gr";
+import formatTime from "@/app/utils/formatTime";
+import { BiTask } from "react-icons/bi";
+
+interface TimerCardProps {
+  nameOfPlan: string;
+  estimatedTime: string;
+}
 
 export default function TimerCard({
   nameOfPlan,
   estimatedTime,
-}: {
-  nameOfPlan: string;
-  estimatedTime: string;
-}): JSX.Element {
+}: TimerCardProps): JSX.Element {
   const [time, setTime] = useState<number>(0);
   const [isRunning, setIsRunning] = useState<boolean>(false);
 
-  const handleTimerReset = () => {
-    setTime(0);
-    localStorage.setItem("timer", "0");
-    setIsRunning(false);
+  // Helper function to safely access localStorage
+  const getStoredValue = (key: string, defaultValue: string): string => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem(key) || defaultValue;
+    }
+    return defaultValue;
   };
 
+  // Load stored timer state on mount
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedTime = Number(localStorage.getItem("timer")) || 0;
-      const storedIsRunning = localStorage.getItem("isRunning") === "true";
-
-      setTime(storedTime);
-      setIsRunning(storedIsRunning);
-    }
+    setTime(Number(getStoredValue("timer", "0")));
+    setIsRunning(getStoredValue("isRunning", "false") === "true");
   }, []);
 
+  // Update localStorage when timer state changes
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("isRunning", String(isRunning));
@@ -42,9 +46,7 @@ export default function TimerCard({
       interval = setInterval(() => {
         setTime((prevTime) => {
           const newTime = prevTime + 1;
-          if (typeof window !== "undefined") {
-            localStorage.setItem("timer", String(newTime));
-          }
+          localStorage.setItem("timer", String(newTime));
           return newTime;
         });
       }, 1000);
@@ -55,64 +57,59 @@ export default function TimerCard({
     };
   }, [isRunning]);
 
-  // 🔥 NEW: Restart the timer automatically if it was running before reload
-  useEffect(() => {
-    if (isRunning) {
-      setIsRunning(true); // Ensures the timer restarts automatically
-    }
-  }, [isRunning]);
-
-  const formatTime = (
-    time: number
-  ): { hours: string; minutes: string; seconds: string } => {
-    const hours = String(Math.floor(time / 3600)).padStart(2, "0");
-    const minutes = String(Math.floor((time % 3600) / 60)).padStart(2, "0");
-    const seconds = String(time % 60).padStart(2, "0");
-    return { hours, minutes, seconds };
+  const resetTimer = () => {
+    setTime(0);
+    setIsRunning(false);
+    localStorage.setItem("timer", "0");
+    localStorage.setItem("isRunning", "false");
   };
 
+  const toggleTimer = () => setIsRunning((prev) => !prev);
+
+  const { hours, minutes, seconds } = formatTime(time);
+
   return (
-    <div className="relative w-[500px] h-[300px] p-2 rounded-xl shadow border border-gray-200 bg-gray-50 text-gray-700 font-semibold text-5xl flex items-center justify-center gap-4">
-      <p className="absolute top-6 text-base">{nameOfPlan}</p>
-      <p className="absolute top-12 text-sm">{estimatedTime}</p>
-      <div className="flex flex-col gap-2 items-center justify-between">
-        <div className="flex flex-row gap-4 items-center justify-center">
-          <div className="flex flex-col gap-3 items-start justify-between">
-            <p className="flex items-center gap-4">
-              {formatTime(time).hours} <span className="pb-2"> :</span>
-            </p>
-            <p className="text-sm ps-2 text-gray-600">Hours</p>
-          </div>
+    <div className="relative w-[500px] h-[300px] p-4 rounded-xl shadow border border-gray-200 bg-gray-50 text-gray-700 font-semibold text-5xl flex flex-col items-center ">
+      <p className="text-base flex items-center gap-2 w-full bg-green-100 border border-green-200 p-2 rounded-md text-green-800">
+        <BiTask size={20} />
+        {nameOfPlan}
+      </p>
+      <p className="w-full text-sm text-gray-600 hidden">{estimatedTime}</p>
 
-          <div className="flex flex-col gap-3 items-start justify-between">
-            <p className="flex items-center gap-4">
-              {formatTime(time).minutes}
-              <span className="pb-2"> :</span>
+      <div className="flex gap-6 mt-12">
+        {[
+          { label: "Hours", value: hours },
+          { label: "Minutes", value: minutes },
+          { label: "Seconds", value: seconds },
+        ].map(({ label, value }, index, array) => (
+          <div key={label} className="flex flex-col items-center">
+            <p className="flex items-center gap-2">
+              {value}
+              <span
+                className={`${index < array.length - 1 ? "block" : "hidden"}`}
+              >
+                :
+              </span>
             </p>
-            <p className="text-sm text-gray-600">Minutes</p>
+            <p className="text-sm text-gray-600">{label}</p>
           </div>
-
-          <div className="flex flex-col gap-3 items-start justify-between">
-            <p className="flex items-center gap-4">
-              {formatTime(time).seconds}
-              <span className="pb-2 collapse"> : </span>
-            </p>
-            <p className="text-sm text-gray-600">Seconds</p>
-          </div>
-        </div>
+        ))}
       </div>
-      <button
-        onClick={() => setIsRunning(!isRunning)}
-        className="p-3 bg-green-200 rounded-full text-gray-600 absolute bottom-4 right-5"
-      >
-        {isRunning ? <BsPauseFill size={32} /> : <BsPlayFill size={32} />}
-      </button>
-      <button
-        onClick={() => handleTimerReset()}
-        className="p-3 bg-red-100 hover:bg-red-200 duration-150 text-red-700 text-sm rounded-md absolute bottom-4 left-5"
-      >
-        <GrPowerReset size={24} />
-      </button>
+
+      <div className="absolute bottom-4 flex gap-6">
+        <button
+          onClick={toggleTimer}
+          className="p-3 bg-green-200 rounded-full text-gray-600"
+        >
+          {isRunning ? <BsPauseFill size={32} /> : <BsPlayFill size={32} />}
+        </button>
+        <button
+          onClick={resetTimer}
+          className="p-3 bg-red-100 hover:bg-red-200 duration-150 text-red-700 rounded-md hidden"
+        >
+          <GrPowerReset size={24} />
+        </button>
+      </div>
     </div>
   );
 }
